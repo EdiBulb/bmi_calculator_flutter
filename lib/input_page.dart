@@ -25,6 +25,8 @@ class InputPage extends StatefulWidget {
 
 class _InputPageState extends State<InputPage> {
   int height = 180; // 이건 계속 바뀌는 값이라서 const가 될 수 없다.
+  int weight = 60;
+  int age = 20;
 
   // This value is changeable so not 'final'
   // Color maleCardColour = inactiveCardColour;   // Starting value
@@ -122,19 +124,29 @@ class _InputPageState extends State<InputPage> {
                     style: kLabelTextStyle,),
                   ],
                 ),
-                  Slider( // 항상 ctrl + q 를 누르면 자세히 보기가 나오니까, 그걸 참고해서 값을 넣자
-                      value: height.toDouble(),
-                      min: 120.0,
-                      max: 220.0,
-                      activeColor: Color(0xFFEB1555), // 참고로, 디테일한 설명은 Flutter Doc를 참고해야한다.
-                      inactiveColor: Color(0xFF8D8E98),
-                      onChanged: (double newValue) {
-                        setState(() {
-                          height = newValue.round();
-
-                        });
-
-                      })
+                  SliderTheme( // Slider의 스타일만 모아둠,
+                    data: SliderTheme.of(context).copyWith( // of와 copyWith로 customizing
+                      inactiveTrackColor: Color(0xFF8D8E98),
+                      activeTrackColor: Colors.white,
+                      thumbColor: Color(0xFFEB1555),
+                      overlayColor: Color(0x29EB1555),
+                      thumbShape: RoundSliderThumbShape(enabledThumbRadius: 15.0), // 크기 커지게 함
+                      overlayShape: RoundSliderOverlayShape(overlayRadius: 30.0), // 오버레이 적용
+                    ),
+                    child: Slider( // 항상 ctrl + q 를 누르면 자세히 보기가 나오니까, 그걸 참고해서 값을 넣자
+                      // 참고로, 디테일한 설명은 Flutter Doc를 참고해야한다.
+                      // 실제 Slider의 기능들은 여기에 모아둠
+                        value: height.toDouble(),
+                        min: 120.0,
+                        max: 220.0,
+                        onChanged: (double newValue) {
+                          setState(() {
+                            height = newValue.round();
+                    
+                          });
+                    
+                        }),
+                  )
                 ],// 같은 폰트로
               ),
             ),
@@ -145,11 +157,82 @@ class _InputPageState extends State<InputPage> {
                 Expanded(
                   child: ReusableCard(
                     colour: kActiveCardColour,
+                    cardChild: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'WEIGHT',
+                          style: kLabelTextStyle,
+                        ),
+                        Text(
+                          weight.toString(),
+                          style: kNumberTextStyle,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            RoundIconButton(
+                              icon: FontAwesomeIcons.minus,
+                              onPressed: () {
+                                print("minus button clicked");
+                                setState(() {
+                                  weight--;
+                                });
+                            },),
+                            SizedBox(width: 10.0,
+                            ),
+                            RoundIconButton(icon: FontAwesomeIcons.plus,
+                              onPressed: (){
+                                print("plus button clicked");
+
+                                setState(() {
+                                weight++;
+                              });
+                            },),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
                 Expanded(
                   child: ReusableCard(
                     colour: kActiveCardColour,
+                    cardChild: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          'AGE',
+                          style: kLabelTextStyle,
+                        ),
+                        Text(
+                          age.toString(),
+                          style: kNumberTextStyle,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            RoundIconButton(
+                              icon: FontAwesomeIcons.minus,
+                              onPressed: () {
+                                print("minus button clicked");
+                                setState(() {
+                                  age--;
+                                });
+                              },),
+                            SizedBox(width: 10.0,
+                            ),
+                            RoundIconButton(icon: FontAwesomeIcons.plus,
+                              onPressed: (){
+                                print("plus button clicked");
+                                setState(() {
+                                  age++;
+                                });
+                              },),
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -167,5 +250,32 @@ class _InputPageState extends State<InputPage> {
   }
 }
 
+// Flutter는 오픈소스이기 때문에 만들어진 위젯에 의지할 필요 없다. 내가 새로 만들면 된다.
+// Package가 만들어지는 원리도 마찬가지다. 사람들이 오픈소스를 가지고 customizing 해서 만들어진 것이다.
+// 플러터의 위젯에 의지할 필요 없다. 절대로!!!
+class RoundIconButton extends StatelessWidget {
+
+  RoundIconButton({required this.icon, required this.onPressed});
+
+  final IconData? icon;
+  final VoidCallback onPressed; // 이게 강의에서는 Function으로 선언하는데, VoidCallBack으로 바뀌었다.
+
+  // challenge
+
+  @override
+  Widget build(BuildContext context) {
+    return RawMaterialButton( // RawMaterialButton 파일 보고 가져옴
+      child: Icon(icon),
+      elevation: 0.0,
+      onPressed: onPressed,
+      constraints: BoxConstraints.tightFor(
+        width: 56.0,
+        height: 56.0,
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+      fillColor: Color(0xFF4C4F5E),
+    );
+  }
+}
 
 
