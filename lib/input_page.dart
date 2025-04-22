@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart'; // 패키지 import
+import 'constants.dart';
 import 'reusable_card.dart';
 import 'icon_content.dart';
 
 // It's better to seperate class file with main file.
 
-// const는 컴파일 전에 값이 정해져있어야하고,
-// final은 컴파일 후, 나중에 값이 정해져도 된다.
-const bottomContainerHeight = 80.0; // for bottom container height, when need to modify, not to dig through.
-const activeCardColour = Color(0xFF1D1E33); // can change color here. : 클릭되었을 때 바뀌는 컬러
-const inactiveCardColour = Color(0xFF111328); // 보통일 때 컬러
-const bottomContainerColour = Color(0xFFEB1555);
+
 
 // enum can't be declared inside class.
 // why use enum?: if I set male is equal 1, female is equal 2, it is confusing to understand.
@@ -28,6 +24,7 @@ class InputPage extends StatefulWidget {
 }
 
 class _InputPageState extends State<InputPage> {
+  int height = 180; // 이건 계속 바뀌는 값이라서 const가 될 수 없다.
 
   // This value is changeable so not 'final'
   // Color maleCardColour = inactiveCardColour;   // Starting value
@@ -41,6 +38,7 @@ class _InputPageState extends State<InputPage> {
   // void updateColour(Gender selectedGender) {
   //
   //   // 항상 우리의 목표는 코드 자체를 보고 이해하기 쉽게 만들고, 코드의 양을 줄이는 것이다.
+  //   // 그래서 if else 대신 Ternary Operator를 씀, 그리고 변수명이 너무 중요하다.
   //   // when male card pressed.
   //   if (selectedGender == Gender.male) {
   //     if (maleCardColour == inactiveCardColour) {
@@ -66,48 +64,39 @@ class _InputPageState extends State<InputPage> {
     return Scaffold(
       appBar: AppBar(title: Text('BMI CALCULATOR')),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           Expanded(
             child: Row(
               children: <Widget>[
                 Expanded(
-                  child: GestureDetector( // ReusableCard를 Clickable 하게 만들기 위해서 GestureDetector로 Wrap 함. button으로 안하는 이유: card 스타일을 변경시킴
-                    onTap: () { // Tap 되면 setState로 업데이트 시킨다.
-                      // colour update.
+                  child: ReusableCard(
+                    onPress: (){
                       setState(() {
-                        selectedGender = Gender.male; // 여기서 값을 준다.
-                        // updateColour(Gender.male); // 1: male ==> enum으로 변경함.
+                        selectedGender = Gender.male;
                       });
-
-                    } ,
-                    child: ReusableCard(
-                      // ReusableCard 위젯에 있는 colour, cardChild 프로퍼티를 커스터마이징한다.
-                      colour: selectedGender == Gender.male ? activeCardColour : inactiveCardColour,
-                      // colour: maleCardColour, // 보통일 때 컬러
-                      // ReusableCard 위젯 컨텐츠를 customizing 함.
-                      cardChild: IconContent(icon: FontAwesomeIcons.mars,
-                        label: 'MALE',
-                      ),
+                    },
+                    // ReusableCard 위젯에 있는 colour, cardChild 프로퍼티를 커스터마이징한다.
+                    colour: selectedGender == Gender.male ? kActiveCardColour : kInactiveCardColour,
+                    // colour: maleCardColour, // 보통일 때 컬러
+                    // ReusableCard 위젯 컨텐츠를 customizing 함.
+                    cardChild: IconContent(icon: FontAwesomeIcons.mars,
+                      label: 'MALE',
                     ),
                   ),
                 ),
                 Expanded(
-                  child: GestureDetector(
-                    onTap: () { // Tap 되면 setState로 업데이트 시킨다.
-                      // colour update.
+                  child: ReusableCard(
+                    onPress: (){
                       setState(() {
-                        selectedGender = Gender.female; // 여기서 값을 준다.
-                        // updateColour(Gender.female); // 2: female ==> enum으로 변경함.
+                        selectedGender = Gender.female;
                       });
-
-                    } ,
-                    child: ReusableCard(
-                      // 이래서 변수명 잘 설정하는 게 중요하구나...
-                      colour: selectedGender == Gender.female ? activeCardColour : inactiveCardColour,
-                      // colour: femaleCardColour,
-                      cardChild: IconContent(icon: FontAwesomeIcons.venus,
-                        label: 'FEMALE',
-                      ),
+                    },
+                    // 이래서 변수명 잘 설정하는 게 중요하구나...
+                    colour: selectedGender == Gender.female ? kActiveCardColour : kInactiveCardColour,
+                    // colour: femaleCardColour,
+                    cardChild: IconContent(icon: FontAwesomeIcons.venus,
+                      label: 'FEMALE',
                     ),
                   ),
                 ),
@@ -116,7 +105,38 @@ class _InputPageState extends State<InputPage> {
           ),
           Expanded(
             child: ReusableCard(
-              colour: activeCardColour,
+              colour: kActiveCardColour,
+              cardChild: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[Text('HEIGHT', style: kLabelTextStyle,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.baseline, // 밑줄 맞춤 정렬
+                  textBaseline: TextBaseline.alphabetic, // 밑줄 맞춤 정렬
+                  children: <Widget>[
+                    Text(
+                      height.toString(),
+                      style: kNumberTextStyle, // constants.dart 에서 만듬
+                    ),
+                    Text('cm',
+                    style: kLabelTextStyle,),
+                  ],
+                ),
+                  Slider( // 항상 ctrl + q 를 누르면 자세히 보기가 나오니까, 그걸 참고해서 값을 넣자
+                      value: height.toDouble(),
+                      min: 120.0,
+                      max: 220.0,
+                      activeColor: Color(0xFFEB1555), // 참고로, 디테일한 설명은 Flutter Doc를 참고해야한다.
+                      inactiveColor: Color(0xFF8D8E98),
+                      onChanged: (double newValue) {
+                        setState(() {
+                          height = newValue.round();
+
+                        });
+
+                      })
+                ],// 같은 폰트로
+              ),
             ),
           ),
           Expanded(
@@ -124,22 +144,22 @@ class _InputPageState extends State<InputPage> {
               children: <Widget>[
                 Expanded(
                   child: ReusableCard(
-                    colour: activeCardColour,
+                    colour: kActiveCardColour,
                   ),
                 ),
                 Expanded(
                   child: ReusableCard(
-                    colour: activeCardColour,
+                    colour: kActiveCardColour,
                   ),
                 ),
               ],
             ),
           ),
           Container(
-            color: bottomContainerColour,
+            color: kBottomContainerColour,
             margin: EdgeInsets.only(top: 10.0), // only top margin.
             width: double.infinity,
-            height: bottomContainerHeight,
+            height: kBottomContainerHeight,
           )
         ],
       ),

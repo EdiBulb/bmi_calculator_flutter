@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
+
+import 'constants.dart';
 // input_page.dart에서 seperate함.
 
-// Text의 style을 하드코딩 하지 않기 위해서, (not to do hard coding)
-const labelTextStyle = TextStyle(
-  fontSize: 18.0,
-  color: Color(0xFF8D8E98),
-);
+
 
 // 코드가 반복 되어서: Refactor -> Extract Widget: Refactoring widget, so no need to repeat codes.
 class IconContent extends StatelessWidget {
@@ -28,7 +26,7 @@ class IconContent extends StatelessWidget {
         SizedBox(height: 15.0,), // 간격
         Text(
           label, // 텍스트
-          style: labelTextStyle, // much simple
+          style: kLabelTextStyle, // much simple
         )
       ],
     );
