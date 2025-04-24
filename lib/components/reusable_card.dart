@@ -23,9 +23,11 @@ class ReusableCard extends StatelessWidget {
     return GestureDetector(
       onTap: onPress,
       child: Container(
+
         child: cardChild, // Container 속에 컨텐츠를 child로 표현한다.
         // How to use container?: container has only one child.
         margin: EdgeInsets.all(15.0),
+        padding: EdgeInsets.only(bottom: 0.0),
         decoration: BoxDecoration(
           // to style box.
           borderRadius: BorderRadius.circular(10.0),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'constants.dart';
+import '../constants.dart';
 // input_page.dart에서 seperate함.
 
 
