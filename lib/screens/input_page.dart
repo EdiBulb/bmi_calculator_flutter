@@ -7,7 +7,7 @@ import '../components/icon_content.dart';
 import '../components/reusable_card.dart';
 import '../components/buttom_button.dart';
 import '../components/round_icon_button.dart';
-
+import 'package:bmi_calculator_flutter/calculator_brain.dart';
 
 // It's better to seperate class file with main file.
 
@@ -251,9 +251,18 @@ class _InputPageState extends State<InputPage> {
           BottomButton(
             buttonTitle: 'CALCULATE',
             onTap: () {
+
+              // 계산
+              CalculatorBrain calc = CalculatorBrain(height: height, weight: weight);
+
+              // 값 넘기기
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ResultsPage()),
+                MaterialPageRoute(builder: (context) => ResultsPage(
+                  bmiResult: calc.calculatedBMI(),
+                  resultText: calc.getResult(),
+                  interpretation: calc.getInterpretation(),
+                )),
               );
             },
           ),
